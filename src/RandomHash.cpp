@@ -8,8 +8,7 @@ namespace RH
     template <Hashable K, typename V>
     RandomHash<K, V>::RandomHash(uint capacity)
         : m_table(Util::next_prime(capacity)),
-          m_count(0),
-          m_fullBuckets(0)
+          m_count(0), m_fullBuckets(0)
     {
         for (auto& entry : m_table)
             entry.state = Record::State::EMPTY;
@@ -19,14 +18,22 @@ namespace RH
     void RandomHash<K, V>::insert(const K& key, const V& val)
     {
         auto& entry = m_table(hash(key));
+
         if (entry.state == Record::State::ACTIVE)
             throw std::out_of_range(std::format("Key: {} already exists", key));
         else
         {
-            if (entry.state == Record::State::EMPTY)
+            if (entry.state == Record::State::DELETED)
+            {
+                entry.state = Record::State::ACTIVE;
+                if (entry.val != val)
+                    entry.val = val;
+            }
+            else if (entry.state == Record::State::EMPTY)
+            {
+                entry = {key, val, Record::State::ACTIVE};
                 m_fullBuckets++;
-            
-            entry = {key, val, Record::State::ACTIVE};
+            }
             m_count++;
 
             if (load_factor() > MAX_LOAD_FACTOR)
@@ -38,6 +45,7 @@ namespace RH
     void RandomHash<K, V>::remove(const K& key)
     {
         auto& entry = m_table(hash(key));
+
         if (entry.state == Record::State::ACTIVE)
         {
             entry.state = Record::State::DELETED;

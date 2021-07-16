@@ -25,7 +25,7 @@ namespace RH
     class RandomHash
     {
     private:
-        template <typename K, typename V>
+        template <Hashable K, typename V>
         struct Record
         {
             enum class State
