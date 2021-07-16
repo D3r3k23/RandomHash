@@ -3,16 +3,21 @@
 	"tasks": [
 		{
 			"type": "cppbuild",
-			"label": "build test executable: cl.exe",
+			"label": "Build Tests (Debug)",
 			"command": "cl.exe",
 			"args": [
+				"/Od",
 				"/Zi",
 				"/EHsc",
 				"/nologo",
-				"/Fe: ${workspaceFolder}\\test\\build\\Tests.exe",
-				"/I ${workspaceFolder}\\src",
-				"${workspaceFolder}\\src\\*.cpp",
-				"${workspaceFolder}\\test\\TestMain.cpp"
+				"/std:c++latest",
+				"/Fe${workspaceFolder}\\test\\build\\debug\\Tests.exe",
+				"/Fo${workspaceFolder}\\test\\build\\debug\\",
+				"/Fd${workspaceFolder}\\test\\build\\debug\\",
+				"/I${workspaceFolder}\\src\\",
+				"/I${workspaceFolder}\\test\\",
+				"${workspaceFolder}\\src\\**.cpp",
+				"${workspaceFolder}\\test\\**.cpp"
 			],
 			"options": {
 				"cwd": "${workspaceFolder}"
@@ -24,6 +29,31 @@
 				"kind": "build",
 				"isDefault": true
 			},
+			"detail": "compiler: cl.exe"
+		},
+		{
+			"type": "cppbuild",
+			"label": "Build Tests (Release)",
+			"command": "cl.exe",
+			"args": [
+				"/O2",
+				"/EHsc",
+				"/nologo",
+				"/std:c++latest",
+				"/Fe${workspaceFolder}\\test\\build\\release\\Tests.exe",
+				"/Fo${workspaceFolder}\\test\\build\\release\\",
+				"/I${workspaceFolder}\\src\\",
+				"/I${workspaceFolder}\\test\\",
+				"${workspaceFolder}\\src\\**.cpp",
+				"${workspaceFolder}\\test\\**.cpp"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"problemMatcher": [
+				"$msCompile"
+			],
+			"group": "build",
 			"detail": "compiler: cl.exe"
 		}
 	]
