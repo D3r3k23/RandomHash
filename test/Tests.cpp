@@ -13,15 +13,16 @@ namespace RH::Tests
         using Time  = std::chrono::time_point<Clock>;
         using Micro = std::chrono::microseconds;
 
+        std::cout << std::format("Test: {}", name) << '\n';
+
         Time start  = Clock::now();
         bool passed = func();
         Time end    = Clock::now();
 
         Micro elapsed = std::chrono::duration_cast<Micro>(end - start);
 
-        std::cout << std::format("Test:    {}", name)                         << '\n';
-        std::cout << std::format("Result:  {}", passed ? "Passed" : "Failed") << '\n';
-        std::cout << std::format("Profile: {}", elapsed.count())              << '\n';
+        std::cout << std::format("Result: {}", passed ? "Passed" : "Failed") << '\n';
+        std::cout << std::format("Profile: {} us", elapsed.count()) << '\n';
         std::cout << '\n';
     }
 

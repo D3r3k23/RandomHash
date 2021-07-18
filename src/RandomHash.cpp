@@ -1,37 +1,61 @@
 #include "RandomHash.hpp"
 
 #include <format>
-#include <stdexcept>
 
 namespace RH
 {
+    uint next_prime(uint n)
+    {
+        while (!is_prime(n))
+            n++;
+        return n;
+    }
+
+    bool is_prime(uint n)
+    {
+        if (n < 2)
+            return false;
+        if (n == 2)
+            return true;
+        if (n % 2 == 0)
+            return false;
+
+        for (uint i = 3; i*i <= n; i += 2)
+            if (n % i == 0)
+                return false;
+        
+        return true;
+    }
+
     template <Hashable K, typename V>
-    RandomHash<K, V>::RandomHash(uint capacity)
-        : m_table(Util::next_prime(capacity)),
-          m_count(0), m_fullBuckets(0)
+    RandomHash<K, V>::RandomHash(uint initCapacity)
+      : m_table(next_prime(initCapacity)),
+        m_INIT_CAPACITY(initCapacity),
+        m_count(0),
+        m_fullBuckets(0)
     {
         for (auto& entry : m_table)
-            entry.state = Record::State::EMPTY;
+            entry.state = RecordState::EMPTY;
     }
 
     template <Hashable K, typename V>
     void RandomHash<K, V>::insert(const K& key, const V& val)
     {
-        auto& entry = m_table(hash(key));
-
-        if (entry.state == Record::State::ACTIVE)
-            throw std::out_of_range(std::format("Key: {} already exists", key));
+        auto& entry = m_table[hash(key)];
+        
+        if (entry.state == RecordState::ACTIVE)
+            throw KeyError(std::format("Key: {} already exists", key));
         else
         {
-            if (entry.state == Record::State::DELETED)
+            if (entry.state == RecordState::DELETED)
             {
-                entry.state = Record::State::ACTIVE;
+                entry.state = RecordState::ACTIVE;
                 if (entry.val != val)
                     entry.val = val;
             }
-            else if (entry.state == Record::State::EMPTY)
+            else // entry.state == RecordState::EMPTY
             {
-                entry = {key, val, Record::State::ACTIVE};
+                entry = { key, val, RecordState::ACTIVE };
                 m_fullBuckets++;
             }
             m_count++;
@@ -44,13 +68,24 @@ namespace RH
     template <Hashable K, typename V>
     void RandomHash<K, V>::remove(const K& key)
     {
-        auto& entry = m_table(hash(key));
+        auto& entry = m_table[hash(key)];
 
-        if (entry.state == Record::State::ACTIVE)
+        if (entry.state == RecordState::ACTIVE)
         {
-            entry.state = Record::State::DELETED;
+            entry.state = RecordState::DELETED;
             m_count--;
         }
+        else
+            throw KeyError(std::format("Key: {} does not exist", key));
+    }
+
+    template <Hashable K, typename V>
+    void RandomHash<K, V>::clear(void)
+    {
+        m_table.clear();
+        m_table.resize(m_INIT_CAPACITY);
+        m_count = 0;
+        m_fullBuckets = 0;
     }
 
     template <Hashable K, typename V>
@@ -58,12 +93,12 @@ namespace RH
     {
         auto& entry = m_table[hash(key)];
 
-        if (entry.state == Record::State::ACTIVE)
+        if (entry.state == RecordState::ACTIVE)
             return entry.val;
         else
         {
             insert(key);
-            return entry.val; // Might not work?
+            return entry.val;
         }
     }
 
@@ -72,14 +107,14 @@ namespace RH
     {
         const auto& entry = m_table[hash(key)];
 
-        if (entry.state == Record::State::ACTIVE)
+        if (entry.state == RecordState::ACTIVE)
             return entry.val;
         else
-            throw std::out_of_range(std::format("Key: {} does not exist", key));
+            throw KeyError(std::format("Key: {} does not exist", key));
     }
 
     template <Hashable K, typename V>
-    size_t RandomHash<K, V>::size(void) const
+    uint RandomHash<K, V>::size(void) const
     {
         return m_count;
     }
@@ -93,7 +128,7 @@ namespace RH
     template <Hashable K, typename V>
     bool RandomHash<K, V>::contains(const K& key) const
     {
-        return m_table[hash(key)].state == Record::State::ACTIVE;
+        return m_table[hash(key)].state == RecordState::ACTIVE;
     }
 
     template <Hashable K, typename V>
@@ -111,10 +146,14 @@ namespace RH
     template <Hashable K, typename V>
     std::string RandomHash<K, V>::to_string(void) const
     {
-        std::string s = "{\n";
+        std::string str = "{\n";
+
         for (const auto& entry : m_table)
-            s += std::format("  {}: {}\n", entry.key, entry.val);
-        s += "}\n";
+            if (entry.state == RecordState::ACTIVE)
+                str += std::format("  {}: {}\n", entry.key, entry.val);
+                
+        str += "}\n";
+        return str;
     }
 
     template <Hashable K, typename V>
@@ -122,33 +161,29 @@ namespace RH
     {
         for (uint i = 0; i < bucket_count(); i++)
         {
-            uint index = (std::hash(key) + i + i*i) % bucket_count();
+            uint index = (std::hash<K>{}(key) + i) % bucket_count();
 
-            if (m_table[index].state == Record::State::EMPTY)
-                return index;
-            if (m_table[index].key == key)
+            if (m_table[index].state == RecordState::EMPTY || m_table[index].key == key)
                 return index;
         }
 
         // No bucket found
-        rehash();
-        return hash(key);
+        throw HashError(std::format("No bucket found for key: {}", key));
     }
 
     template <Hashable K, typename V>
     void RandomHash<K, V>::rehash(void)
     {
-        uint newBucketCount = Util::next_prime(2 * bucket_count());
+        uint newBucketCount = next_prime(2 * bucket_count());
 
         RH_LOG(std::format("Rehashing: {} -> {}", bucket_count(), newBucketCount));
 
         auto oldTable = std::move(m_table);
-        m_table = std::vector<Record<K, V>>(newBucketCount);
-        m_count = 0;
-        m_fullBuckets = 0;
+        clear();
+        m_table.resize(newBucketCount);
 
         for (const auto& entry : oldTable)
-            if (entry.state == Record::State::ACTIVE)
+            if (entry.state == RecordState::ACTIVE)
                 insert(entry.key, entry.val);
     }
 }

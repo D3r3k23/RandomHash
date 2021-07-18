@@ -1,3 +1,4 @@
-Random Hash Table Implementation
+## Random Hash Table Implementation
 
-- Uses open addressing
+* Uses open addressing with linear probing
+* Unordered
