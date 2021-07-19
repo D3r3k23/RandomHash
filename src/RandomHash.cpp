@@ -159,9 +159,11 @@ namespace RH
     template <Hashable K, typename V>
     uint RandomHash<K, V>::hash(const K& key) const
     {
+        uint hashVal = std::hash<K>{}(key);
+
         for (uint i = 0; i < bucket_count(); i++)
         {
-            uint index = (std::hash<K>{}(key) + i) % bucket_count();
+            uint index = (hashVal + i) % bucket_count();
 
             if (m_table[index].state == RecordState::EMPTY || m_table[index].key == key)
                 return index;

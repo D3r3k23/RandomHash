@@ -10,6 +10,8 @@ namespace RH::Tests
     void run_test(std::function<bool()> func, const char* name);
 
     bool test1(void);
+    bool test_clear(void);
+    bool test_remove(void);
 }
 
 #endif // TESTS_HPP
