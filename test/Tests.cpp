@@ -19,10 +19,10 @@ namespace RH::Tests
         bool passed = func();
         Time end    = Clock::now();
 
-        Micro elapsed = std::chrono::duration_cast<Micro>(end - start);
+        auto elapsed = std::chrono::duration_cast<Micro>(end - start).count();
 
         std::cout << std::format("Result: {}", passed ? "Passed" : "Failed") << '\n';
-        std::cout << std::format("Profile: {} us", elapsed.count()) << '\n';
+        std::cout << std::format("Profile: {} us", elapsed) << '\n';
         std::cout << '\n';
     }
 
@@ -34,8 +34,8 @@ namespace RH::Tests
 
         std::cout << h.to_string() << '\n';
 
-        if (h.size() != 2) return false;
-        if (h.empty()) return false;
-        return true;
+        if  (h.size() != 2) return false;
+        else if (h.empty()) return false;
+        else return true;
     }
 }

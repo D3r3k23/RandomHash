@@ -47,7 +47,7 @@ namespace RH
             throw KeyError(std::format("Key: {} already exists", key));
         else
         {
-            if (entry.state == RecordState::DELETED)
+            if (entry.state == RecordState::DELETED) // entry.key == key
             {
                 entry.state = RecordState::ACTIVE;
                 if (entry.val != val)
@@ -70,13 +70,13 @@ namespace RH
     {
         auto& entry = m_table[hash(key)];
 
-        if (entry.state == RecordState::ACTIVE)
+        if (entry.state != RecordState::ACTIVE)
+            throw KeyError(std::format("Key: {} does not exist", key));
+        else
         {
             entry.state = RecordState::DELETED;
             m_count--;
         }
-        else
-            throw KeyError(std::format("Key: {} does not exist", key));
     }
 
     template <Hashable K, typename V>
@@ -93,13 +93,10 @@ namespace RH
     {
         auto& entry = m_table[hash(key)];
 
-        if (entry.state == RecordState::ACTIVE)
-            return entry.val;
-        else
-        {
+        if (entry.state != RecordState::ACTIVE)
             insert(key);
-            return entry.val;
-        }
+        
+        return entry.val;
     }
 
     template <Hashable K, typename V>
@@ -107,10 +104,10 @@ namespace RH
     {
         const auto& entry = m_table[hash(key)];
 
-        if (entry.state == RecordState::ACTIVE)
-            return entry.val;
-        else
+        if (entry.state != RecordState::ACTIVE)
             throw KeyError(std::format("Key: {} does not exist", key));
+        else
+            return entry.val;
     }
 
     template <Hashable K, typename V>
@@ -164,8 +161,9 @@ namespace RH
         for (uint i = 0; i < bucket_count(); i++)
         {
             uint index = (hashVal + i) % bucket_count();
+            const auto& entry = m_table[index];
 
-            if (m_table[index].state == RecordState::EMPTY || m_table[index].key == key)
+            if (entry.state == RecordState::EMPTY || entry.key == key)
                 return index;
         }
 
