@@ -10,6 +10,7 @@ namespace RH::Tests
     void run_test(std::function<bool()> func, const char* name);
 
     bool test1(void);
+    bool test_hash(void);
     bool test_clear(void);
     bool test_remove(void);
 }

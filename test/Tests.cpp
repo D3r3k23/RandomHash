@@ -4,6 +4,7 @@
 
 #include <iostream>
 #include <chrono>
+#include <random>
 
 namespace RH::Tests
 {
@@ -37,5 +38,44 @@ namespace RH::Tests
         if  (h.size() != 2) return false;
         else if (h.empty()) return false;
         else return true;
+    }
+
+    bool test_hash(void)
+    {
+        std::random_device rd;
+        std::mt19937 gen(rd());
+        std::uniform_int_distribution<> distr(0, 9999);
+
+        RH::RandomHash<int, int> h;
+        for (int i = 0; i < 25; i++)
+        {
+            h[i*3] = distr(gen);
+            std::cout << h.to_string() << '\n';
+        }
+        return true;
+    }
+
+    bool test_clear(void)
+    {
+
+        RH::RandomHash<int, int> h;
+        for (int i = 0; i < 50; i++)
+            h[i] = i;
+        
+        std::cout << "Size: " << h.size() << '\n';
+        std::cout << "Buckets: " << h.bucket_count() << '\n';
+        std::cout << "LF: " << h.load_factor() << '\n';
+
+        std::cout << "Clearing table" << '\n';
+        h.clear();
+        std::cout << "Size: " << h.size() << '\n';
+        std::cout << "Buckets: " << h.bucket_count() << '\n';
+        std::cout << "LF: " << h.load_factor() << '\n';
+        return h.empty();
+    }
+
+    bool test_remove(void)
+    {
+        return true;
     }
 }
