@@ -1,6 +1,7 @@
 #include "RandomHash.hpp"
 
 #include <format>
+#include <stringstream>
 
 namespace RH
 {
@@ -143,14 +144,15 @@ namespace RH
     template <Hashable K, typename V>
     std::string RandomHash<K, V>::to_string(void) const
     {
-        std::string str = "{\n";
+        std::stringstream ss;
+        ss << "{\n";
 
         for (const auto& entry : m_table)
             if (entry.state == RecordState::ACTIVE)
-                str += std::format("  {}: {}\n", entry.key, entry.val);
+                ss << std::format("  {}: {}\n", entry.key, entry.val);
                 
-        str += "}\n";
-        return str;
+        ss << "}\n";
+        return ss.str();
     }
 
     template <Hashable K, typename V>
