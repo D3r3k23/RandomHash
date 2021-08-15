@@ -2,58 +2,78 @@
 	"version": "2.0.0",
 	"tasks": [
 		{
-			"type": "cppbuild",
 			"label": "Build Tests (Debug)",
-			"command": "cl.exe",
-			"args": [
-				"/Od",
-				"/DRH_DEBUG",
-				"/Zi",
-				"/EHsc",
-				"/nologo",
-				"/std:c++latest",
-				"/Fe${workspaceFolder}\\test\\build\\debug\\Tests.exe",
-				"/Fo${workspaceFolder}\\test\\build\\debug\\",
-				"/Fd${workspaceFolder}\\test\\build\\debug\\",
-				"/I${workspaceFolder}\\src\\",
-				"/I${workspaceFolder}\\test\\",
-				"${workspaceFolder}\\test\\**.cpp"
-			],
-			"options": {
-				"cwd": "${workspaceFolder}"
-			},
-			"problemMatcher": [
-				"$msCompile"
-			],
+			"type": "cppbuild",
 			"group": {
 				"kind": "build",
 				"isDefault": true
 			},
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"command": "cl.exe",
+			"args": [
+				"/std:c++latest",
+				"/nologo",
+				"/EHsc",
+				"/Od",
+				"/DRH_DEBUG",
+				"/Zi",
+				"/Fd${workspaceFolder}\\test\\build\\debug\\",
+				"/Fe${workspaceFolder}\\test\\build\\debug\\Tests.exe",
+				"/Fo${workspaceFolder}\\test\\build\\debug\\",
+				"/I${workspaceFolder}\\src\\",
+				"/I${workspaceFolder}\\test\\",
+				"${workspaceFolder}\\src\\**.cpp",
+				"${workspaceFolder}\\test\\**.cpp"
+			],
+			"problemMatcher": [
+				"$msCompile"
+			],
 			"detail": "compiler: cl.exe"
 		},
 		{
-			"type": "cppbuild",
 			"label": "Build Tests (Release)",
+			"type": "cppbuild",
+			"group": "build",
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
 			"command": "cl.exe",
 			"args": [
-				"/O2",
-				"/EHsc",
-				"/nologo",
 				"/std:c++latest",
+				"/nologo",
+				"/EHsc",
+				"/Od",
 				"/Fe${workspaceFolder}\\test\\build\\release\\Tests.exe",
 				"/Fo${workspaceFolder}\\test\\build\\release\\",
 				"/I${workspaceFolder}\\src\\",
 				"/I${workspaceFolder}\\test\\",
+				"${workspaceFolder}\\src\\**.cpp",
 				"${workspaceFolder}\\test\\**.cpp"
 			],
-			"options": {
-				"cwd": "${workspaceFolder}"
-			},
 			"problemMatcher": [
 				"$msCompile"
 			],
-			"group": "build",
 			"detail": "compiler: cl.exe"
+		},
+		{
+			"label": "Run Tests (Debug)",
+			"type": "process",
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"command": "${workspaceFolder}\\test\\build\\debug\\Tests.exe",
+			"problemMatcher": []
+		},
+		{
+			"label": "Run Tests (Release)",
+			"type": "process",
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"command": "${workspaceFolder}\\test\\build\\release\\Tests.exe",
+			"problemMatcher": []
 		}
 	]
 }

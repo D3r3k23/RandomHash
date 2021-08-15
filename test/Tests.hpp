@@ -1,5 +1,7 @@
-#ifndef TESTS_HPP
-#define TESTS_HPP
+#ifndef RH_TESTS_HPP
+#define RH_TESTS_HPP
+
+#include "RandomHash.hpp"
 
 #include <functional>
 
@@ -15,4 +17,4 @@ namespace RH::Tests
     bool test_remove(void);
 }
 
-#endif // TESTS_HPP
+#endif // RH_ESTS_HPP

@@ -1,7 +1,5 @@
 #include "Tests.hpp"
 
-#include "RandomHash.hpp"
-
 #include <iostream>
 #include <chrono>
 #include <random>

@@ -1,5 +1,7 @@
-#ifndef RANDOM_HASH_HPP
-#define RANDOM_HASH_HPP
+#ifndef RH_RANDOM_HASH_HPP
+#define RH_RANDOM_HASH_HPP
+
+#include "Prime.hpp"
 
 #include <vector>
 #include <string>
@@ -27,8 +29,8 @@ namespace RH
         { std::hash<T>{}(x) } -> std::convertible_to<std::size_t>;
     };
 
-    uint next_prime(uint n);
-    bool is_prime(uint n);
+    // uint next_prime(uint n);
+    // bool is_prime(uint n);
 
     enum class RecordState
     {
@@ -81,17 +83,15 @@ namespace RH
 
     struct KeyError : public std::runtime_error
     {
-        KeyError(const char* what)        : std::runtime_error(what) {}
-        KeyError(const std::string& what) : std::runtime_error(what) {}
+        KeyError(const std::string& what) : std::runtime_error("[KeyError] " + what) {}
     };
 
     struct HashError : public std::runtime_error
     {
-        HashError(const char* what)        : std::runtime_error(what) {}
-        HashError(const std::string& what) : std::runtime_error(what) {}
+        HashError(const std::string& what) : std::runtime_error("[HashError] " + what) {}
     };
 }
 
-#include "RandomHash.cpp" // Template definitions
+#include "RandomHash.tpp" // Template definitions
 
-#endif // RANDOM_HASH_HPP
+#endif // RH_RANDOM_HASH_HPP
