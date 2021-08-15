@@ -21,14 +21,14 @@ namespace RH
     const uint DEFAULT_CAPACITY = 11;
     const float MAX_LOAD_FACTOR = 0.75;
 
-    uint next_prime(uint n);
-    bool is_prime(uint n);
-
     template <typename T>
     concept Hashable = requires(T x)
     {
         { std::hash<T>{}(x) } -> std::convertible_to<std::size_t>;
     };
+
+    uint next_prime(uint n);
+    bool is_prime(uint n);
 
     enum class RecordState
     {
