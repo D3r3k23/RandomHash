@@ -50,13 +50,13 @@
 			"command": "cl.exe",
 			"args": [
 				"/std:c++latest", // C++ standard
-				"/nologo", 		  // Suppress startup banner
-				"/EHsc", 		  // Exception handling
+				"/nologo", // Suppress startup banner
+				"/EHsc", // Exception handling
 
 				"/O2", // Optimization level 2
 
 				"/Fe${workspaceFolder}\\test\\build\\release\\Tests.exe", // Executable file location
-				"/Fo${workspaceFolder}\\test\\build\\release\\", 		  // Object file location
+				"/Fo${workspaceFolder}\\test\\build\\release\\", // Object file location
 				
 				// Include directories
 				"/I${workspaceFolder}\\src\\",
