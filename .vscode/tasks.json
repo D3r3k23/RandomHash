@@ -16,6 +16,7 @@
 				"/std:c++latest", // C++ standard
 				"/nologo", // Suppress startup banner
 				"/EHsc", // Exception handling
+				"/Wall", // Warnings
 
 				"/Od", // Disable optimization
 
@@ -24,6 +25,7 @@
 				"/Zi", // Generate debug information in PDB
 				"/Fd${workspaceFolder}\\test\\build\\debug\\", // PDB file location
 
+				// Output files
 				"/Fe${workspaceFolder}\\test\\build\\debug\\Tests.exe", // Executable file location
 				"/Fo${workspaceFolder}\\test\\build\\debug\\", // Object file location
 
@@ -52,9 +54,11 @@
 				"/std:c++latest", // C++ standard
 				"/nologo", // Suppress startup banner
 				"/EHsc", // Exception handling
+				"/Wall", // Warnings
 
 				"/O2", // Optimization level 2
 
+				// Output files
 				"/Fe${workspaceFolder}\\test\\build\\release\\Tests.exe", // Executable file location
 				"/Fo${workspaceFolder}\\test\\build\\release\\", // Object file location
 				
