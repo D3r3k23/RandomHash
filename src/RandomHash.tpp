@@ -1,4 +1,7 @@
-// #include "RandomHash.hpp"
+#ifndef RH_RANDOM_HASH_TPP
+#define RH_RANDOM_HASH_TPP
+
+#include "RandomHash.hpp"
 
 #include <format>
 #include <sstream>
@@ -166,3 +169,5 @@ namespace RH
                 insert(entry.key, entry.val);
     }
 }
+
+#endif // RH_RANDOM_HASH_TPP
