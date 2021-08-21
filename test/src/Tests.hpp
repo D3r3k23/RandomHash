@@ -17,4 +17,4 @@ namespace RH::Tests
     bool test_remove(void);
 }
 
-#endif // RH_ESTS_HPP
+#endif // RH_TESTS_HPP

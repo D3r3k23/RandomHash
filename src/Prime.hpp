@@ -1,4 +1,4 @@
-#ifndef PRIME_HPP
+#ifndef RH_PRIME_HPP
 #define RH_PRIME_HPP
 
 namespace RH

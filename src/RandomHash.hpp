@@ -29,9 +29,6 @@ namespace RH
         { std::hash<T>{}(x) } -> std::convertible_to<std::size_t>;
     };
 
-    // uint next_prime(uint n);
-    // bool is_prime(uint n);
-
     enum class RecordState
     {
         EMPTY,
