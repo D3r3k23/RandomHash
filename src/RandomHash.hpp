@@ -73,19 +73,55 @@ namespace RH
 
         std::string to_string(void) const;
 
+        template <Hashable K, typename V> friend class KeyIterator;
+
+        KeyIterator<K, V> begin(void) { return KeyIterator<K, V>(m_table.begin()); }
+        KeyIterator<K, V> end(void)   { return KeyIterator<K, V>(m_table.end()); }
+
     private:
         uint hash(const K& key) const;
         void rehash(void);
     };
 
+    template <Hashable K, typename V>
+    using RecordIterator = std::vector<Record<K, V>>::iterator;
+
+    template <Hashable K, typename V>
+    class KeyIterator
+    {
+    private:
+        RecordIterator<K, V> it;
+
+    public:
+        KeyIterator(void) = delete;
+        KeyIterator(const RecordIterator<K, V>& it);
+
+        KeyIterator(const KeyIterator& other) = default;
+        KeyIterator& operator=(const KeyIterator& other) = default;
+
+        const K& operator*(void)  const;
+        const K& operator->(void) const;
+
+        operator bool(void) const;
+
+        bool operator==(const KeyIterator& other) const;
+        bool operator!=(const KeyIterator& other) const;
+
+        KeyIterator& operator++(void);
+        KeyIterator  operator++(int);
+
+        KeyIterator& operator--(void);
+        KeyIterator  operator--(int);
+    };
+
     struct KeyError : public std::runtime_error
     {
-        KeyError(const std::string& what) : std::runtime_error("[KeyError] " + what) {}
+        KeyError(const std::string& what) : std::runtime_error("[RH::KeyError] " + what) {}
     };
 
     struct HashError : public std::runtime_error
     {
-        HashError(const std::string& what) : std::runtime_error("[HashError] " + what) {}
+        HashError(const std::string& what) : std::runtime_error("[RH::HashError] " + what) {}
     };
 }
 

@@ -23,7 +23,7 @@ namespace RH
     void RandomHash<K, V>::insert(const K& key, const V& val)
     {
         auto& entry = m_table[hash(key)];
-        
+
         if (entry.state == RecordState::ACTIVE)
             throw KeyError(std::format("Key: {} already exists", key));
         else
@@ -76,7 +76,7 @@ namespace RH
 
         if (entry.state != RecordState::ACTIVE)
             insert(key);
-        
+
         return entry.val;
     }
 
@@ -130,7 +130,7 @@ namespace RH
         for (const auto& entry : m_table)
             if (entry.state == RecordState::ACTIVE)
                 ss << std::format("  {}: {}\n", entry.key, entry.val);
-                
+
         ss << "}\n";
         return ss.str();
     }
@@ -167,6 +167,67 @@ namespace RH
         for (const auto& entry : oldTable)
             if (entry.state == RecordState::ACTIVE)
                 insert(entry.key, entry.val);
+    }
+
+    // KeyIterator
+
+    template <Hashable K, typename V>
+    KeyIterator<K, V>::KeyIterator(const RecordIterator<K, V>& it)
+        : it(it)
+    { }
+
+    template <Hashable K, typename V>
+    const K& KeyIterator<K, V>::operator*(void) const
+    {
+        return it->key;
+    }
+
+    template <Hashable K, typename V>
+    const K& KeyIterator<K, V>::operator->(void) const
+    {
+        return it->key;
+    }
+
+    template <Hashable K, typename V>
+    KeyIterator<K, V>::operator bool(void) const
+    {
+        return it->state == RecordState::ACTIVE;
+    }
+
+    template <Hashable K, typename V>
+    bool KeyIterator<K, V>::operator==(const KeyIterator& other) const
+    {
+        return *it == *(other.it);
+    }
+
+    template <Hashable K, typename V>
+    bool KeyIterator<K, V>::operator!=(const KeyIterator& other) const
+    {
+        return !(*this == other);
+    }
+
+    template <Hashable K, typename V>
+    KeyIterator<K, V>& KeyIterator<K, V>::operator++(void)
+    {
+        return ++it;
+    }
+
+    template <Hashable K, typename V>
+    KeyIterator<K, V> KeyIterator<K, V>::operator++(int)
+    {
+        return it++;
+    }
+
+    template <Hashable K, typename V>
+    KeyIterator<K, V>& KeyIterator<K, V>::operator--(void)
+    {
+        return --it;
+    }
+
+    template <Hashable K, typename V>
+    KeyIterator<K, V> KeyIterator<K, V>::operator--(int)
+    {
+        return it--;
     }
 }
 
